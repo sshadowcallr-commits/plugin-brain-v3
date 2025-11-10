@@ -60,38 +60,55 @@ for d in [DATABASE_DIR, LOGS_DIR, DATA_DIR]:
 print("\n🔽 Synchronizing Neuro-Slim Experts...")
 
 def load_expert(name: str, filename: str, n_gpu_layers: int = -1) -> Optional[Llama]:
+    """Universal model loader with GPU fallback and safety logging."""
     path = MODEL_DIR / filename
-    if path.exists():
-        print(f"   • Syncing {name}...")
-        try:
-            # Try GPU first, auto-fallback to CPU if VRAM is full.
-            # Limited context (n_ctx=2048) to save VRAM for your 1060 6GB.
-            model = Llama(model_path=str(path), n_gpu_layers=n_gpu_layers, verbose=False, n_ctx=2048)
-            print(f"   ✔ {name} online.")
-            return model
-        except Exception:
-             print(f"   ⚠ GPU sync failed for {name}. Rerouting to CPU...")
-             try:
-                model = Llama(model_path=str(path), n_gpu_layers=0, verbose=False, n_ctx=2048)
-                print(f"   ✔ {name} online (CPU Mode).")
-                return model
-             except Exception as e:
-                 print(f"   ❌ Failed to sync {name}: {e}")
-                 return None
-    else:
+    if not path.exists():
         print(f"   ⚠ Expert missing: {filename}")
         return None
 
-# --- 6GB VRAM OPTIMIZED TEAM ---
-# Generalist: Gemma-2 (Smart, fast, ~1.6GB VRAM)
-gemma = load_expert("Gemma-2-2B (Generalist)", "gemma-2-2b-it-Q4_K_M.gguf")
-# Specialist: Phi-3-Mini (Replaces massive Mistral, ~2.3GB VRAM)
-mistral = load_expert("Phi-3-Mini (Specialist)", "Phi-3-mini-4k-instruct-q4.gguf")
-# Sensory: Qwen2-1.5B (Ultra-fast, ~1.0GB VRAM)
-phi = load_expert("Qwen2-1.5B (Sensory)", "qwen2-1_5b-instruct-q4_k_m.gguf")
+    print(f"   • Syncing {name}...")
+    try:
+        # Try GPU load first (unless n_gpu_layers=0 forces CPU)
+        model = Llama(model_path=str(path), n_gpu_layers=n_gpu_layers, verbose=False, n_ctx=2048)
+        device = "GPU" if n_gpu_layers != 0 else "CPU"
+        print(f"   ✔ {name} online ({device} Mode).")
+        return model
+    except Exception:
+        print(f"   ⚠ GPU sync failed for {name}. Rerouting to CPU...")
+        try:
+            model = Llama(model_path=str(path), n_gpu_layers=0, verbose=False, n_ctx=2048)
+            print(f"   ✔ {name} online (CPU Mode - Fallback).")
+            return model
+        except Exception as e:
+            print(f"   ❌ Failed to sync {name}: {e}")
+            return None
 
+
+# ============================================================
+# 🧠 PLUGIN BRAIN v5 — NEURO-CORE INITIALIZATION (6GB MODE)
+# ============================================================
+
+# Generalist: Gemma-2-2B (Main reasoning core)
+gemma = load_expert(
+    "Gemma-2-2B (Generalist)",
+    "gemma-2-2b-it-Q4_K_M.gguf",
+    n_gpu_layers=-1  # Use GPU acceleration
+)
+
+# Specialist: reuse Gemma instance (saves VRAM)
+mistral = gemma  # VRAM-efficient reuse of Gemma as Specialist
+
+# Sensory: Qwen2-1.5B (fast perception & text parsing)
+phi = load_expert(
+    "Qwen2-1.5B (Sensory)",
+    "qwen2-1_5b-instruct-q4_k_m.gguf",
+    n_gpu_layers=-1  # Use GPU acceleration
+)
+
+# Semantic Memory: Sentence Transformer (runs on CPU)
 print("   • Syncing Semantic Memory (E5)...")
 try:
+    from sentence_transformers import SentenceTransformer
     sim_model = SentenceTransformer("intfloat/e5-small-v2")
     print("   ✔ Semantic Memory online.")
 except Exception as e:

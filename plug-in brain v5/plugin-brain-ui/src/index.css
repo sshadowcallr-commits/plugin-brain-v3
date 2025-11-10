@@ -1,1 +1,36 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 180 100% 50%;
+    --radius: 0.75rem;
+  }
+}
+
+body {
+  @apply bg-background text-foreground;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.15), transparent 40%),
+    radial-gradient(circle at 0% 90%, rgba(120, 0, 255, 0.1), transparent 40%);
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { @apply bg-transparent; }
+::-webkit-scrollbar-thumb { @apply bg-neon/20 rounded-full hover:bg-neon/50 transition-colors; }
+
+/* Utility Classes for Glass */
+.glass-panel {
+  @apply bg-secondary/30 backdrop-blur-xl border border-white/5 shadow-glass;
+}
+.neon-text {
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
