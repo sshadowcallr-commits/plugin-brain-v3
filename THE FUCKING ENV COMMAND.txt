@@ -1,0 +1,5 @@
+# 1. Go to the correct project folder
+cd "C:\Users\dimbe\Documents\plugin brain v3"
+
+# 2. Activate the venv
+.\venv\Scripts\Activate.ps1

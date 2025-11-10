@@ -1,0 +1,29 @@
+{
+  "models_path": "C:/Users/dimbe/Documents/plugin brain v3/models",
+  "agents": {
+    "leader": {
+      "model_id": "google/gemma-2-2b-it",
+      "gguf_file": "gemma-2-2b-it-Q4_K_M.gguf",
+      "description": "Orchestrator. Classifies plugins, validates other agents, and makes final decisions."
+    },
+    "scanner": {
+      "model_id": "mistralai/Mistral-7B-Instruct-v0.2",
+      "gguf_file": "mistral-7b-instruct-v0.2.Q4_K_M.gguf",
+      "description": "Analyzes file/NFO content for deep context and initial categorization."
+    },
+    "enricher": {
+      "model_id": "microsoft/Phi-3-mini-4k-instruct",
+      "gguf_file": "Phi-3-mini-4k-instruct-q4.gguf",
+      "description": "Generates search queries and parses web results for unknown plugins."
+    },
+    "similarity": {
+      "model_id": "sentence-transformers/e5-small",
+      "description": "Creates vector embeddings to find duplicates and variants."
+    }
+  },
+  "system_prompts": {
+    "leader_classify": "You are a VST plugin classifier. Your job is to determine the correct category path for a plugin based on its name and metadata. The path must be logical, starting with 'Effects' or 'Instruments', followed by type, subtype, and vendor. Example: 'Effects/Dynamics/Compressor/iZotope'. Respond ONLY with the classification path.",
+    "scanner_analyze": "You are a metadata extractor. Analyze the following text (from a plugin name or .nfo file) and extract the Vendor, Plugin Name, and Plugin Type (e.g., EQ, Compressor, Synth). Respond ONLY in JSON format: {\"vendor\": \"...\", \"name\": \"...\", \"type\": \"...\"}",
+    "enricher_query": "You are a search query generator. Given a plugin name, generate 3 short, effective Google search queries to find its vendor and function. Focus on sources like 'KVR Audio'. Respond ONLY as a JSON list: [\"query1\", \"query2\", \"query3\"]"
+  }
+}

@@ -1,0 +1,21 @@
+# --- Backend Server ---
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.9
+aiofiles>=23.2.0 # For async file I/O [cite: 149]
+
+# --- AI Inference & Orchestration (THE PIVOT) ---
+langgraph>=0.0.48 # The MoA orchestrator [cite: 108]
+langchain-community>=0.0.38
+llama-cpp-python==0.2.70 # Our new inference engine 
+sentence-transformers>=2.5.0 # For e5-small [cite: 67]
+torch>=2.2.0 --index-url https://download.pytorch.org/whl/cu118
+transformers>=4.40.1
+
+# --- Web Enrichment & Data Handling ---
+trafilatura>=1.9.0 # To clean HTML [cite: 128]
+requests>=2.31.0 # For web agent tools
+
+# --- Utility ---
+pydantic>=2.6.0 # For data validation [cite: 130]
+numpy>=1.26.0

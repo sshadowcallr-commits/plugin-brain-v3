@@ -1,0 +1,5 @@
+& "C:\Users\dimbe\Documents\plugin brain v3\venv\Scripts\Activate.ps1"
+
+cd "C:\Users\dimbe\Documents\plugin brain v3\plug-in brain v5"
+
+uvicorn api.api_server:app --reload

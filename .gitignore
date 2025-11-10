@@ -1,0 +1,12 @@
+venv/
+node_modules/
+models/
+plug-in brain v5/models/
+mistral.rs/
+_archive_v3/
+_v3_BACKUP*/
+__pycache__/
+*.pyc
+.env
+*.log
+.DS_Store
